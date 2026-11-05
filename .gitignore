@@ -1,0 +1,9 @@
+.env
+data/store.json
+data/*.tmp
+data/*.broken-*
+*.exe
+*.log
+.DS_Store
+.vscode/
+.idea/

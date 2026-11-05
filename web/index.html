@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#08111f">
+  <meta name="description" content="A multilingual voice operations copilot for small Indian retailers, powered by Gnani Prisma and Timbre.">
+  <title>Vyapari Voice Copilot</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Vyapari Voice Copilot home">
+        <span class="brand-mark" aria-hidden="true">V</span>
+        <span>
+          <strong>Vyapari</strong>
+          <small>Voice Copilot</small>
+        </span>
+      </a>
+
+      <div class="topbar-actions">
+        <div id="apiStatus" class="status-pill status-loading">
+          <span class="status-dot"></span>
+          <span>Checking Gnani API</span>
+        </div>
+        <button id="installButton" class="button button-ghost hidden" type="button">Install app</button>
+        <a class="button button-ghost" href="/api/export.csv">Export inventory</a>
+        <button id="resetButton" class="button button-danger-ghost" type="button">Reset demo</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero-grid">
+        <article class="panel voice-panel">
+          <div class="hero-copy">
+            <div class="eyebrow"><span></span> Sovereign voice AI for Indian retail</div>
+            <h1>Run your shop by <em>speaking naturally.</em></h1>
+            <p>Record sales, check inventory and receive demand-aware reorder suggestions in Telugu + English without navigating complex software.</p>
+            <div class="model-badges" aria-label="Models used">
+              <span>Gnani Prisma STT</span>
+              <span>Gnani Timbre TTS</span>
+              <span>Go backend</span>
+              <span>Local-first data</span>
+            </div>
+          </div>
+
+          <div class="voice-console">
+            <div class="voice-toolbar">
+              <div>
+                <span class="label">Voice command</span>
+                <strong id="recordingLabel">Ready to listen</strong>
+              </div>
+              <div class="voice-settings">
+                <label>
+                  Response
+                  <select id="responseLanguage">
+                    <option value="auto">Auto</option>
+                    <option value="te-IN">Telugu</option>
+                    <option value="en-IN">English</option>
+                  </select>
+                </label>
+                <label class="toggle-label">
+                  <input id="autoSpeak" type="checkbox" checked>
+                  <span class="toggle"></span>
+                  Speak reply
+                </label>
+              </div>
+            </div>
+
+            <div class="recorder-area">
+              <canvas id="waveform" width="900" height="140" aria-label="Microphone audio level"></canvas>
+              <button id="micButton" class="mic-button" type="button" aria-label="Start recording">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21H8v2h8v-2h-3v-3.08A7 7 0 0 0 19 11h-2Z"/>
+                </svg>
+                <span class="mic-ring"></span>
+              </button>
+              <div class="recording-meta">
+                <span id="recordingTimer">00:00</span>
+                <span id="sttMeta">Click the microphone and speak for up to 25 seconds</span>
+              </div>
+            </div>
+
+            <form id="commandForm" class="command-form">
+              <label class="sr-only" for="commandInput">Type a shop command</label>
+              <input id="commandInput" type="text" autocomplete="off" placeholder="Try: Basmati rice stock entha undi?">
+              <button class="button button-primary" type="submit">Run command</button>
+            </form>
+
+            <div id="suggestionChips" class="suggestion-chips" aria-label="Example commands"></div>
+
+            <div class="conversation" aria-live="polite">
+              <div class="conversation-card user-card">
+                <span class="conversation-icon">You</span>
+                <div>
+                  <small>Transcript</small>
+                  <p id="transcriptText">Your spoken or typed command appears here.</p>
+                </div>
+              </div>
+              <div class="conversation-card copilot-card">
+                <span class="conversation-icon">AI</span>
+                <div>
+                  <small>Vyapari response</small>
+                  <p id="responseText">I am ready to help with stock, sales and reordering.</p>
+                </div>
+                <button id="replayButton" class="icon-button" type="button" aria-label="Replay response" title="Replay response">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7L8 5Zm-3 2H3v10h2V7Z"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <aside class="panel impact-panel">
+          <div class="impact-top">
+            <div>
+              <span class="label">Built for</span>
+              <h2>India's typing-light businesses</h2>
+            </div>
+            <span class="live-badge">LIVE DEMO</span>
+          </div>
+          <div class="impact-visual">
+            <div class="orbit orbit-one"></div>
+            <div class="orbit orbit-two"></div>
+            <div class="impact-core">
+              <span>తెలుగు</span>
+              <strong>+</strong>
+              <span>English</span>
+            </div>
+          </div>
+          <div class="impact-list">
+            <div><strong>Code-mixed</strong><span>Natural shop-floor speech</span></div>
+            <div><strong>Action-first</strong><span>Updates business data, not just chat</span></div>
+            <div><strong>Explainable</strong><span>Shows stock and reorder reasoning</span></div>
+            <div><strong>Private</strong><span>API key stays on the Go server</span></div>
+          </div>
+        </aside>
+      </section>
+
+      <section id="metricsGrid" class="metrics-grid" aria-label="Today's shop metrics">
+        <article class="metric-card metric-primary">
+          <span>Today's revenue</span>
+          <strong id="todayRevenue">₹0</strong>
+          <small id="todayOrders">0 orders</small>
+        </article>
+        <article class="metric-card">
+          <span>Estimated profit</span>
+          <strong id="todayProfit">₹0</strong>
+          <small id="profitMargin">0% gross margin</small>
+        </article>
+        <article class="metric-card">
+          <span>Items sold</span>
+          <strong id="itemsSold">0</strong>
+          <small>Recorded today</small>
+        </article>
+        <article class="metric-card metric-warning">
+          <span>Stock alerts</span>
+          <strong id="lowStockCount">0</strong>
+          <small>Need attention</small>
+        </article>
+        <article class="metric-card">
+          <span>Inventory value</span>
+          <strong id="inventoryValue">₹0</strong>
+          <small>At purchase cost</small>
+        </article>
+      </section>
+
+      <section class="analytics-grid">
+        <article class="panel chart-panel">
+          <div class="section-heading">
+            <div>
+              <span class="label">Last 7 days</span>
+              <h2>Sales pulse</h2>
+            </div>
+            <div class="legend"><span></span> Revenue</div>
+          </div>
+          <canvas id="salesChart" width="900" height="330" aria-label="Seven-day sales chart"></canvas>
+        </article>
+
+        <article class="panel reorder-panel">
+          <div class="section-heading">
+            <div>
+              <span class="label">Demand-aware</span>
+              <h2>Smart reorder plan</h2>
+            </div>
+            <a class="text-link" href="/api/reorder.csv">Download CSV</a>
+          </div>
+          <div id="reorderList" class="reorder-list"></div>
+        </article>
+      </section>
+
+      <section class="panel inventory-panel">
+        <div class="section-heading inventory-heading">
+          <div>
+            <span class="label">Live operations</span>
+            <h2>Inventory control room</h2>
+          </div>
+          <div class="inventory-actions">
+            <label class="search-box">
+              <span class="sr-only">Search inventory</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 19-4.35-4.35A7.5 7.5 0 1 0 15 16.65L19 21l2-2ZM5 10.5a5.5 5.5 0 1 1 11 0 5.5 5.5 0 0 1-11 0Z"/></svg>
+              <input id="inventorySearch" type="search" placeholder="Search products">
+            </label>
+            <button id="undoButton" class="button button-ghost" type="button">Undo last</button>
+            <button id="addProductButton" class="button button-primary" type="button">Add product</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Stock</th>
+                <th>Status</th>
+                <th>Sell price</th>
+                <th>Margin</th>
+                <th>Quick actions</th>
+              </tr>
+            </thead>
+            <tbody id="inventoryBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="bottom-grid">
+        <article class="panel">
+          <div class="section-heading">
+            <div>
+              <span class="label">Momentum</span>
+              <h2>Top products</h2>
+            </div>
+          </div>
+          <div id="topProducts" class="top-products"></div>
+        </article>
+
+        <article class="panel">
+          <div class="section-heading">
+            <div>
+              <span class="label">Traceable actions</span>
+              <h2>Recent activity</h2>
+            </div>
+          </div>
+          <div id="activityList" class="activity-list"></div>
+        </article>
+
+        <article class="panel architecture-panel">
+          <div class="section-heading">
+            <div>
+              <span class="label">How it works</span>
+              <h2>Voice-to-action pipeline</h2>
+            </div>
+          </div>
+          <ol class="pipeline">
+            <li><span>01</span><div><strong>Listen</strong><small>Browser records 16 kHz WAV</small></div></li>
+            <li><span>02</span><div><strong>Understand</strong><small>Gnani Prisma transcribes code-mixed speech</small></div></li>
+            <li><span>03</span><div><strong>Act</strong><small>Go engine validates and updates shop data</small></div></li>
+            <li><span>04</span><div><strong>Speak</strong><small>Gnani Timbre returns a Telugu or English reply</small></div></li>
+          </ol>
+        </article>
+      </section>
+    </main>
+
+    <footer>
+      <span>Vyapari Voice Copilot</span>
+      <span>Built with synthetic demo data for the Great Indian AI Internship Challenge.</span>
+    </footer>
+  </div>
+
+  <dialog id="productDialog" class="modal">
+    <form id="productForm" method="dialog">
+      <div class="modal-heading">
+        <div>
+          <span class="label">Inventory setup</span>
+          <h2>Add a product</h2>
+        </div>
+        <button id="closeProductDialog" class="icon-button" type="button" aria-label="Close">×</button>
+      </div>
+      <div class="form-grid">
+        <label>Product name<input name="name" required placeholder="Example: Groundnut Oil"></label>
+        <label>Category<input name="category" required placeholder="Cooking"></label>
+        <label>Unit<input name="unit" required placeholder="bottles"></label>
+        <label>Opening stock<input name="stock" type="number" min="0" value="10" required></label>
+        <label>Low-stock threshold<input name="lowStockThreshold" type="number" min="0" value="5" required></label>
+        <label>Target stock<input name="targetStock" type="number" min="1" value="25" required></label>
+        <label>Cost price<input name="costPrice" type="number" min="0" step="0.01" value="100" required></label>
+        <label>Sell price<input name="sellPrice" type="number" min="0.01" step="0.01" value="120" required></label>
+        <label class="full-span">Aliases for voice matching<input name="aliases" placeholder="groundnut, peanut oil, వేరుశెనగ నూనె"></label>
+      </div>
+      <div class="modal-actions">
+        <button class="button button-ghost" type="button" id="cancelProductButton">Cancel</button>
+        <button class="button button-primary" type="submit">Add to inventory</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <audio id="responseAudio" hidden></audio>
+  <script src="/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+services:
+  vyapari:
+    build: .
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    volumes:
+      - vyapari-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  vyapari-data:

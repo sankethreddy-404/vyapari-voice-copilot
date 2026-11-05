@@ -1,0 +1,8 @@
+.git
+.env
+data/store.json
+*.log
+README.md
+START_HERE.md
+SUBMISSION.md
+DEMO_SCRIPT.md
