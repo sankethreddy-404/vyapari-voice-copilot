@@ -4,6 +4,10 @@
 
 Vyapari turns Telugu + English shop-floor speech into safe, traceable business actions. A shopkeeper can check stock, record a sale, add stock, hear daily performance and receive demand-aware reorder suggestions without learning a complex point-of-sale interface.
 
+## Product preview
+
+![Vyapari Voice Copilot dashboard](docs/images/dashboard.png)
+
 ## Why this is more than a voice chatbot
 
 A normal voice chatbot only answers questions. Vyapari connects speech to an operational state machine:
